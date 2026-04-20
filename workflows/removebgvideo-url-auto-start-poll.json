@@ -16,7 +16,7 @@
           "string": [
             { "name": "apiBase", "value": "https://api.removebgvideo.com" },
             { "name": "apiKey", "value": "YOUR_API_KEY" },
-            { "name": "videoUrl", "value": "https://cdn.removebgvideo.com/uploads/demo.mp4" },
+            { "name": "videoUrl", "value": "https://cdn.removebgvideo.com/uploads/382dcf8d-f1ee-43be-a514-b85a1541d017.mp4" },
             { "name": "model", "value": "original" },
             { "name": "outputFormat", "value": "webm" }
           ]

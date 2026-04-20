@@ -22,7 +22,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { video_url: 'https://cdn.removebgvideo.com/uploads/demo.mp4', model: 'pro', output_format: 'webm', background: { type: 'transparent' }, auto_start: false } }}"
+        "jsonBody": "={{ { video_url: 'https://cdn.removebgvideo.com/uploads/382dcf8d-f1ee-43be-a514-b85a1541d017.mp4', model: 'pro', output_format: 'webm', background: { type: 'transparent' }, auto_start: false } }}"
       },
       "id": "create-draft",
       "name": "Create Draft Job",
@@ -43,7 +43,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { model: 'pro', text_prompt: 'character, staff, glowing ring, clothing accessories', webhook_url: 'https://your-app.com/webhooks/removebgvideo' } }}"
+        "jsonBody": "={{ { model: 'pro', text_prompt: 'character, staff, glowing ring, clothing accessories', webhook_url: 'https://removebgvideo.com/webhooks/removebgvideo' } }}"
       },
       "id": "start-job",
       "name": "Start Draft Job",
