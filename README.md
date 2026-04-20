@@ -1,43 +1,35 @@
 # RemoveBGVideo n8n Templates
 
-Import-ready n8n workflows for RemoveBGVideo Public API v1.
+Import-ready n8n workflows for the RemoveBGVideo Public API v1.
+
+- API Base: `https://api.removebgvideo.com`
+- Docs: `https://removebgvideo.com/docs/examples/n8n`
+- Website downloads mirror: `https://removebgvideo.com/downloads/n8n/`
 
 ## Included Templates
 
-1. `removebgvideo-url-auto-start-poll.json`
-- Input: hosted `video_url`
-- Flow: create job (`auto_start=true`) -> get status
+| Template | Purpose | Core Flow |
+|---|---|---|
+| `removebgvideo-url-auto-start-poll.json` | Simplest URL-based flow | `POST /v1/jobs` (`auto_start=true`) -> `GET /v1/jobs/{job_id}` |
+| `removebgvideo-local-upload-v1.json` | Local file integration | `POST /v1/uploads` -> `POST /v1/jobs` |
+| `removebgvideo-draft-start-pro.json` | Prompt/composition control | Draft job (`auto_start=false`) -> `POST /v1/jobs/{job_id}/start` |
+| `removebgvideo-webhook-receiver.json` | Callback ingestion | Receive `job.*` webhook -> parse -> respond 200 |
+| `removebgvideo-usage-daily-report.json` | Ops/monitoring | Schedule trigger -> `GET /v1/usage/summary` |
 
-2. `removebgvideo-local-upload-v1.json`
-- Input: local file path
-- Flow: `POST /v1/uploads` -> `POST /v1/jobs`
+## Quick Start
 
-3. `removebgvideo-draft-start-pro.json`
-- Input: hosted `video_url`
-- Flow: create draft (`auto_start=false`) -> start with `text_prompt`
+1. Open n8n -> `Workflows` -> `Import from File`
+2. Select one JSON file from `workflows/`
+3. Replace placeholder values (see below)
+4. Run `Test workflow`
+5. Verify output URL or usage payload in execution data
 
-4. `removebgvideo-webhook-receiver.json`
-- Input: webhook callback from RemoveBGVideo backend
-- Flow: receive -> extract fields -> respond 200
-
-5. `removebgvideo-usage-daily-report.json`
-- Input: schedule trigger
-- Flow: query `/v1/usage/summary` -> format report string
-
-## Variables to Replace
+## Required Placeholder Replacements
 
 - `YOUR_API_KEY`
-- `https://cdn.removebgvideo.com/uploads/demo.mp4` (replace with your own video URL)
-- `https://your-app.com/webhooks/removebgvideo` (for webhook template)
-- `/path/to/video.mp4` (for local upload template)
-
-## Import Steps (n8n)
-
-1. Open n8n -> Workflows
-2. Click `Import from File`
-3. Select one JSON file from `workflows/`
-4. Replace placeholders in HTTP nodes
-5. Run test execution
+- `https://cdn.removebgvideo.com/uploads/demo.mp4` (replace with your own input video URL)
+- `https://your-app.com/webhooks/removebgvideo` (webhook template)
+- `/path/to/video.mp4` (local upload template)
 
 ## API Endpoints Used
 
@@ -47,4 +39,8 @@ Import-ready n8n workflows for RemoveBGVideo Public API v1.
 - `GET /v1/jobs/{job_id}`
 - `GET /v1/usage/summary`
 
-Base URL: `https://api.removebgvideo.com`
+## Notes
+
+- Use `webhook_url` in job payload for high-volume automations to reduce polling pressure.
+- For production, store `job_id` and external correlation id in your own DB/log system.
+- Keep one API key per environment (dev/stage/prod) and rotate periodically.
