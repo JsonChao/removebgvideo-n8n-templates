@@ -1,0 +1,84 @@
+{
+  "name": "RemoveBGVideo - URL Auto Start Poll",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [260, 280]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "apiBase", "value": "https://api.removebgvideo.com" },
+            { "name": "apiKey", "value": "YOUR_API_KEY" },
+            { "name": "videoUrl", "value": "https://cdn.removebgvideo.com/uploads/demo.mp4" },
+            { "name": "model", "value": "original" },
+            { "name": "outputFormat", "value": "webm" }
+          ]
+        }
+      },
+      "id": "set-config",
+      "name": "Set Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [500, 280]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json[\"apiBase\"] + '/v1/jobs'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "={{$json[\"apiKey\"]}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { video_url: $json.videoUrl, model: $json.model, output_format: $json.outputFormat, background: { type: 'transparent' }, auto_start: true } }}"
+      },
+      "id": "create-job",
+      "name": "Create Job",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [760, 280]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{'https://api.removebgvideo.com/v1/jobs/' + $json.id}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" }
+          ]
+        }
+      },
+      "id": "get-status",
+      "name": "Get Job Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1020, 280]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "Set Config", "type": "main", "index": 0 }]]
+    },
+    "Set Config": {
+      "main": [[{ "node": "Create Job", "type": "main", "index": 0 }]]
+    },
+    "Create Job": {
+      "main": [[{ "node": "Get Job Status", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "removebgvideo-url-auto-start-poll-v1"
+}

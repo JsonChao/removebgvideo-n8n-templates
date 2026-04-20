@@ -1,0 +1,82 @@
+{
+  "name": "RemoveBGVideo - Local Upload to v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "filePath": "/path/to/video.mp4"
+      },
+      "id": "read-binary",
+      "name": "Read Binary File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.removebgvideo.com/v1/uploads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "file", "parameterType": "formBinaryData", "inputDataFieldName": "data" }
+          ]
+        }
+      },
+      "id": "upload-video",
+      "name": "Upload Video (/v1/uploads)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.removebgvideo.com/v1/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { video_url: $json.video_url, model: 'original', output_format: 'webm', background: { type: 'transparent' }, auto_start: true } }}"
+      },
+      "id": "create-job",
+      "name": "Create Job",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1020, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "Read Binary File", "type": "main", "index": 0 }]]
+    },
+    "Read Binary File": {
+      "main": [[{ "node": "Upload Video (/v1/uploads)", "type": "main", "index": 0 }]]
+    },
+    "Upload Video (/v1/uploads)": {
+      "main": [[{ "node": "Create Job", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "removebgvideo-local-upload-v1"
+}

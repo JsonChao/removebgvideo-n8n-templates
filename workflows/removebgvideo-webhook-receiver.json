@@ -1,0 +1,58 @@
+{
+  "name": "RemoveBGVideo - Webhook Receiver",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "removebgvideo",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "event", "value": "={{$json.event}}" },
+            { "name": "job_id", "value": "={{$json.data.id}}" },
+            { "name": "status", "value": "={{$json.data.status}}" },
+            { "name": "output_url", "value": "={{$json.data.output_url}}" }
+          ]
+        }
+      },
+      "id": "extract",
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [540, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, received: $json.event } }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [820, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "Extract Fields", "type": "main", "index": 0 }]]
+    },
+    "Extract Fields": {
+      "main": [[{ "node": "Respond 200", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "removebgvideo-webhook-receiver"
+}

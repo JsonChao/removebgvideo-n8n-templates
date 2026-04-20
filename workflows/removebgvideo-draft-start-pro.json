@@ -1,0 +1,86 @@
+{
+  "name": "RemoveBGVideo - Draft Start Pro",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [220, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.removebgvideo.com/v1/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { video_url: 'https://cdn.removebgvideo.com/uploads/demo.mp4', model: 'pro', output_format: 'webm', background: { type: 'transparent' }, auto_start: false } }}"
+      },
+      "id": "create-draft",
+      "name": "Create Draft Job",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [470, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{'https://api.removebgvideo.com/v1/jobs/' + $json.id + '/start'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: 'pro', text_prompt: 'character, staff, glowing ring, clothing accessories', webhook_url: 'https://your-app.com/webhooks/removebgvideo' } }}"
+      },
+      "id": "start-job",
+      "name": "Start Draft Job",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [760, 320]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{'https://api.removebgvideo.com/v1/jobs/' + $json.id}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" }
+          ]
+        }
+      },
+      "id": "get-status",
+      "name": "Get Job Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1020, 320]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "Create Draft Job", "type": "main", "index": 0 }]]
+    },
+    "Create Draft Job": {
+      "main": [[{ "node": "Start Draft Job", "type": "main", "index": 0 }]]
+    },
+    "Start Draft Job": {
+      "main": [[{ "node": "Get Job Status", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "removebgvideo-draft-start-pro"
+}

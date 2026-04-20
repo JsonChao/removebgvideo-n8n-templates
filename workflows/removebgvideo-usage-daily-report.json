@@ -1,0 +1,65 @@
+{
+  "name": "RemoveBGVideo - Daily Usage Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 280]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.removebgvideo.com/v1/usage/summary?days=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "YOUR_API_KEY" }
+          ]
+        }
+      },
+      "id": "get-summary",
+      "name": "Get Usage Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 280]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "report", "value": "={{'jobs=' + $json.total_jobs + ', credits=' + $json.credits_used + ', completed=' + $json.completed_jobs}}" }
+          ]
+        }
+      },
+      "id": "format-report",
+      "name": "Format Report",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [800, 280]
+    }
+  ],
+  "connections": {
+    "Daily Trigger": {
+      "main": [[{ "node": "Get Usage Summary", "type": "main", "index": 0 }]]
+    },
+    "Get Usage Summary": {
+      "main": [[{ "node": "Format Report", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "removebgvideo-usage-daily-report"
+}
