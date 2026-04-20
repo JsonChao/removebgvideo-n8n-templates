@@ -27,7 +27,7 @@ Import-ready n8n workflows for the RemoveBGVideo Public API v1.
 ## Required Placeholder Replacements
 
 - `YOUR_API_KEY`
-- `https://cdn.removebgvideo.com/uploads/382dcf8d-f1ee-43be-a514-b85a1541d017.mp4` (replace with your own input video URL)
+- `https://cdn.removebgvideo.com/uploads/7d77f979-cb19-411c-9936-c27829c5bdc5.mp4` (replace with your own input video URL)
 - `https://removebgvideo.com/webhooks/removebgvideo` (webhook template)
 - `/path/to/video.mp4` (local upload template)
 
